@@ -19,6 +19,16 @@ import MyTasks from "./pages/User/MyTasks"
 import ViewTaskDetail from "./pages/User/ViewTaskDetail"
 import UserProfile from "./pages/User/UserProfile"
 
+import HeadDashboard from "./pages/Head/Dashboard"
+import HeadCreateTask from "./pages/Head/CreateTask"
+import HeadManageTasks from "./pages/Head/ManageTasks"
+import HeadManageUsers from "./pages/Head/ManageUsers"
+
+import VPDashboard from "./pages/VP/Dashboard"
+import VPCreateTask from "./pages/VP/CreateTask"
+import VPManageTasks from "./pages/VP/ManageTasks"
+import VPManageUsers from "./pages/VP/ManageUsers"
+
 import "./App.css"
 
 function App() {
@@ -113,6 +123,74 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          {/* VP Routes */}
+<Route
+  path="/vp/dashboard"
+  element={
+    <PrivateRoute role="vp">
+      <VPDashboard />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/vp/create-task"
+  element={
+    <PrivateRoute role="vp">
+      <VPCreateTask />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/vp/manage-tasks"
+  element={
+    <PrivateRoute role="vp">
+      <VPManageTasks />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/vp/manage-users"
+  element={
+    <PrivateRoute role="vp">
+      <VPManageUsers />
+    </PrivateRoute>
+  }
+/>
+
+          {/* Head Routes */}
+<Route
+  path="/head/dashboard"
+  element={
+    <PrivateRoute role="head">
+      <HeadDashboard />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/head/create-task"
+  element={
+    <PrivateRoute role="head">
+      <HeadCreateTask />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/head/manage-tasks"
+  element={
+    <PrivateRoute role="head">
+      <HeadManageTasks />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/head/manage-users"
+  element={
+    <PrivateRoute role="head">
+      <HeadManageUsers />
+    </PrivateRoute>
+  }
+/>
 
           {/* Default Route */}
           <Route path="/" element={<Navigate to="/login" replace />} />

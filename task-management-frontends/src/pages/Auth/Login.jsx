@@ -27,11 +27,20 @@ const Login = () => {
 
     try {
       const userData = await login(formData.email, formData.password)
+      
       // Redirect based on role
-      if (userData.role === "admin") {
-        navigate("/admin/dashboard")
-      } else {
-        navigate("/user/dashboard")
+      switch(userData.role) {
+        case "admin":
+          navigate("/admin/dashboard")
+          break
+        case "vp":
+          navigate("/vp/dashboard")
+          break
+        case "head":
+          navigate("/head/dashboard")
+          break
+        default:
+          navigate("/user/dashboard")
       }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Please try again.")
