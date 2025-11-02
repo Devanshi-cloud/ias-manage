@@ -14,7 +14,7 @@ const HeadDashboard = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Verify user is VP
+    // Verify user is Head
     const user = localStorage.getItem("user")
     if (!user) {
       navigate("/login")
