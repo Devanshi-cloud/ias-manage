@@ -31,6 +31,24 @@ const adminOnly = (req, res, next) => {
   }
 };
 
+// Middleware for Vice President-only access
+const vicepresidentOnly = (req, res, next) => {
+  if (req.user && req.user.role === "vp") {
+    next();
+  } else {
+    res.status(403).json({ message: "Access denied, vice president only" });
+  }
+};
+
+// Middleware for Head-only access
+const headOnly = (req, res, next) => {
+  if (req.user && req.user.role === "head") {
+    next();
+  } else {
+    res.status(403).json({ message: "Access denied, head only" });
+  }
+};
+
 // Middleware for role-based authorization
 const authorize = (roles) => {
   return (req, res, next) => {
@@ -41,4 +59,4 @@ const authorize = (roles) => {
   };
 };
 
-module.exports = { protect, adminOnly, authorize };
+module.exports = { protect, adminOnly, vicepresidentOnly, headOnly, authorize };

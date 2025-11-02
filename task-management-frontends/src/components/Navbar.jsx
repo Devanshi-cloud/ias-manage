@@ -5,7 +5,7 @@ import { LogOut, User, LayoutDashboard, ListTodo, Users, PlusCircle, UserCircle 
 import { useState, useRef, useEffect } from "react"
 
 const Navbar = () => {
-  const { user, logout, isAdmin } = useAuth()
+  const { user, logout, isAdmin, isVP, isHead } = useAuth()
   const navigate = useNavigate()
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const menuRef = useRef(null)
@@ -31,7 +31,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-brand">
         <Link
-          to={isAdmin ? "/admin/dashboard" : "/user/dashboard"}
+          to={isAdmin ? "/admin/dashboard" : isVP ? "/vp/dashboard" : isHead ? "/head/dashboard" : "/user/dashboard"}
           style={{ textDecoration: "none", color: "inherit" }}
         >
           TaskManager
@@ -54,6 +54,25 @@ const Navbar = () => {
               Manage Tasks
             </Link>
             <Link to="/admin/manage-users" className="navbar-link">
+              <Users size={18} style={{ display: "inline", marginRight: "0.25rem" }} />
+              Manage Users
+            </Link>
+          </>
+        ) : isVP || isHead ? (
+          <>
+            <Link to={`/${user?.role}/dashboard`} className="navbar-link">
+              <LayoutDashboard size={18} style={{ display: "inline", marginRight: "0.25rem" }} />
+              Dashboard
+            </Link>
+            <Link to={`/${user?.role}/create-task`} className="navbar-link">
+              <PlusCircle size={18} style={{ display: "inline", marginRight: "0.25rem" }} />
+              Create Task
+            </Link>
+            <Link to={`/${user?.role}/manage-tasks`} className="navbar-link">
+              <ListTodo size={18} style={{ display: "inline", marginRight: "0.25rem" }} />
+              Manage Tasks
+            </Link>
+            <Link to={`/${user?.role}/manage-users`} className="navbar-link">
               <Users size={18} style={{ display: "inline", marginRight: "0.25rem" }} />
               Manage Users
             </Link>
@@ -148,7 +167,7 @@ const Navbar = () => {
               </div>
 
               <Link
-                to={isAdmin ? "/admin/profile" : "/user/profile"}
+                to={isAdmin ? "/admin/profile" : isVP ? "/vp/profile" : isHead ? "/head/profile" : "/user/profile"}
                 style={{
                   display: "flex",
                   alignItems: "center",

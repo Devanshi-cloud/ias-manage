@@ -5,7 +5,7 @@ const { getDashboardData, getUserDashboardData, getDepartmentDashboardData, getT
 const router = express.Router();
 
 // Task Management Routes
-router.get("/dashboard-data", protect, adminOnly, getDashboardData);
+router.get("/dashboard-data", protect, authorize(['admin']), getDashboardData);
 router.get("/user-dashboard-data", protect, getUserDashboardData);
 router.get("/department-dashboard-data", protect, authorize(['vp', 'head']), getDepartmentDashboardData);
 
