@@ -24,6 +24,10 @@ const taskSchema = new mongoose.Schema(
     dueDate: { type: Date, required: true },
     assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // ✅ Changed to array
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    department: {
+      type: String,
+      enum: ["COMMUNICATION", "FINANCE", "DESIGN AND MEDIA", "TECH", "HOSPITALITY"],
+    },
     attachments: { type: String },
     todoChecklist: [todoSchema],
     progress: { type: Number, default: 0 },

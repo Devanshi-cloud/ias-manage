@@ -15,18 +15,18 @@ const UserSchema = new mongoose.Schema(
       default: null
     },
     
-    // Hierarchical Role System
-    role: {
-      type: String,
-      enum: ["admin", "vp", "head", "member"],
-      default: "member",
+    role: { 
+      type: String, 
+      enum: ['admin', 'vp', 'head', 'member'], 
+      default: 'member' 
     },
-    
-    // Department/Team assignment for hierarchy
-    department: {
-      type: String,
-      enum: ["COMMUNICATION", "FINANCE", "DESIGN AND MEDIA", "TECH", "HOSPITALITY", "GENERAL", null],
-      default: null
+    department: { 
+      type: String, 
+      enum: ['COMMUNICATION', 'FINANCE', 'DESIGN AND MEDIA', 'TECH', 'HOSPITALITY'],
+      required: function() { 
+        // Department required for non-admin users
+        return this.role !== 'admin'; 
+      }
     },
     
     // Reference to supervisor (VP or Head)

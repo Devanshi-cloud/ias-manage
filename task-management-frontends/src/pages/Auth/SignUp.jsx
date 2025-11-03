@@ -11,7 +11,7 @@ const SignUp = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    adminInviteToken: "",
+    inviteToken: "",
   })
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -44,16 +44,24 @@ const SignUp = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        adminInviteToken: formData.adminInviteToken || undefined,
+        inviteToken: formData.inviteToken || undefined,
       }
 
       const newUser = await register(userData)
 
       // Redirect based on role
-      if (newUser.role === "admin") {
-        navigate("/admin/dashboard")
-      } else {
-        navigate("/user/dashboard")
+      switch(newUser.role) {
+        case "admin":
+          navigate("/admin/dashboard")
+          break
+        case "vp":
+          navigate("/vp/dashboard")
+          break
+        case "head":
+          navigate("/head/dashboard")
+          break
+        default:
+          navigate("/user/dashboard")
       }
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.")
@@ -131,18 +139,18 @@ const SignUp = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="adminInviteToken">Admin Invite Token (Optional)</label>
+            <label htmlFor="inviteToken">Invite Token (Optional)</label>
             <input
               type="text"
-              id="adminInviteToken"
-              name="adminInviteToken"
+              id="inviteToken"
+              name="inviteToken"
               className="input"
-              value={formData.adminInviteToken}
+              value={formData.inviteToken}
               onChange={handleChange}
-              placeholder="Enter admin token if you have one"
+              placeholder="Enter invite token for VP/Head/Admin role"
             />
-            <small style={{ color: "var(--text-light)", fontSize: "0.75rem" }}>
-              Leave blank to register as a regular user
+            <small style={{ color: "var(--text-light)", fontSize: "0.75rem", display: "block", marginTop: "0.5rem" }}>
+              Leave blank to register as a regular member
             </small>
           </div>
 

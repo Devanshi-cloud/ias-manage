@@ -7,12 +7,32 @@ const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
+// Token to Role and Department Mapping
+const TOKEN_MAPPINGS = {
+  // Admin
+  [process.env.ADMIN_INVITE_TOKEN]: { role: "admin", department: null },
+  
+  // VP Tokens
+  [process.env.VP_TECH_TOKEN]: { role: "vp", department: "TECH" },
+  [process.env.VP_FINANCE_TOKEN]: { role: "vp", department: "FINANCE" },
+  [process.env.VP_COMMUNICATION_TOKEN]: { role: "vp", department: "COMMUNICATION" },
+  [process.env.VP_DESIGN_TOKEN]: { role: "vp", department: "DESIGN AND MEDIA" },
+  [process.env.VP_HOSPITALITY_TOKEN]: { role: "vp", department: "HOSPITALITY" },
+  
+  // Head Tokens
+  [process.env.HEAD_TECH_TOKEN]: { role: "head", department: "TECH" },
+  [process.env.HEAD_FINANCE_TOKEN]: { role: "head", department: "FINANCE" },
+  [process.env.HEAD_COMMUNICATION_TOKEN]: { role: "head", department: "COMMUNICATION" },
+  [process.env.HEAD_DESIGN_TOKEN]: { role: "head", department: "DESIGN AND MEDIA" },
+  [process.env.HEAD_HOSPITALITY_TOKEN]: { role: "head", department: "HOSPITALITY" },
+};
+
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, profileImageUrl, adminInviteToken } = req.body;
+    const { name, email, password, profileImageUrl, inviteToken } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -20,13 +40,13 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Determine user role (admin if correct token provided)
+    // Determine user role and department based on invite token
     let role = "member";
-    if (
-      adminInviteToken &&
-      adminInviteToken === process.env.ADMIN_INVITE_TOKEN
-    ) {
-      role = "admin";
+    let department = null;
+
+    if (inviteToken && TOKEN_MAPPINGS[inviteToken]) {
+      role = TOKEN_MAPPINGS[inviteToken].role;
+      department = TOKEN_MAPPINGS[inviteToken].department;
     }
 
     // Hash password
@@ -40,6 +60,7 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
       profileImageUrl,
       role,
+      department,
     });
 
     // Return user data with JWT
@@ -48,6 +69,7 @@ const registerUser = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      department: user.department,
       profileImageUrl: user.profileImageUrl,
       token: generateToken(user._id),
     });
