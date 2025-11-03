@@ -7,9 +7,11 @@ const bcrypt = require("bcryptjs");
 // @access  Private (Admin)
 const getUsers = async (req, res) => {
     try {
-      let query = { role: "member" }; // Default for admin
+      let query = {}; // Default for admin
 
-      if (req.user.role === "vp" || req.user.role === "head") {
+      if (req.user.role === "admin") {
+        query = { role: { $in: ["member", "vp", "head"] } };
+      } else if (req.user.role === "vp" || req.user.role === "head") {
         query = { role: "member", department: req.user.department };
       }
 
@@ -87,8 +89,8 @@ const updateUser = async (req, res) => {
     // Authorization Check
     if (req.user.role !== "admin") {
       if (req.user.role === "vp" || req.user.role === "head") {
-        // VP/Head can update users in their department
-        if (user.department !== req.user.department) {
+        // VP/Head can update users in their department and with same iasPosition
+        if (user.department !== req.user.department || (user.role === "member" && user.iasPosition !== req.user.iasPosition)) {
           return res.status(403).json({ message: "Not authorized to update this user" });
         }
         // Prevent VP/Head from changing role or department
