@@ -78,6 +78,7 @@ const registerUser = async (req, res) => {
   }
 };
 
+// Rest of the controller functions remain the same...
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
@@ -100,6 +101,7 @@ const loginUser = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      department: user.department,
       profileImageUrl: user.profileImageUrl,
       token: generateToken(user._id),
     });
@@ -113,11 +115,43 @@ const loginUser = async (req, res) => {
 // @access  Private
 const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    let query = { role: "member" }; // Base query for members only
+
+    if (req.user.role === "vp" || req.user.role === "head") {
+      // VP and Head can only see members whose iasPosition matches their department
+      query = { 
+        role: "member", 
+        iasPosition: req.user.department // Match iasPosition with VP/Head's department
+      };
     }
-    res.status(200).json(user);
+    // Admin sees all members (no additional filter)
+
+    const users = await User.find(query).select("-password");
+
+    // Add task counts to each user
+    const usersWithTaskCounts = await Promise.all(
+      users.map(async (user) => {
+        const pendingTasks = await Task.countDocuments({
+          assignedTo: user._id,
+          status: "Pending"
+        });
+        const inProgressTasks = await Task.countDocounts({
+          assignedTo: user._id,
+          status: "In Progress"
+        });
+        const completedTasks = await Task.countDocuments({
+          assignedTo: user._id,
+          status: "Completed"
+        });
+        return {
+          ...user.toObject(),
+          pendingTasks,
+          inProgressTasks,
+          completedTasks
+        };
+      })
+    );
+    res.json(usersWithTaskCounts);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -149,6 +183,7 @@ const updateUserProfile = async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
+      department: updatedUser.department,
       token: generateToken(updatedUser._id),
     });
   } catch (error) {

@@ -54,6 +54,7 @@ export default function ManageUsers() {
                 <th style={{ padding: "1rem", textAlign: "left" }}>Name</th>
                 <th style={{ padding: "1rem", textAlign: "left" }}>Email</th>
                 <th style={{ padding: "1rem", textAlign: "left" }}>Role</th>
+                <th style={{ padding: "1rem", textAlign: "left" }}>IAS Position</th>
                 <th style={{ padding: "1rem", textAlign: "left" }}>Joined</th>
               </tr>
             </thead>
@@ -65,6 +66,7 @@ export default function ManageUsers() {
                   <td style={{ padding: "1rem" }}>
                     <span className={`badge ${user.role === "admin" ? "badge-high" : "badge-low"}`}>{user.role}</span>
                   </td>
+                  <td style={{ padding: "1rem" }}>{user.iasPosition || "N/A"}</td>
                   <td style={{ padding: "1rem" }}>{new Date(user.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}

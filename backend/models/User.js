@@ -52,5 +52,7 @@ const UserSchema = new mongoose.Schema(
 UserSchema.index({ role: 1, department: 1 });
 UserSchema.index({ supervisor: 1 });
 UserSchema.index({ birthday: 1 });
+// Add this index
+UserSchema.index({ role: 1, iasPosition: 1 });
 
 module.exports = mongoose.model("User", UserSchema);
